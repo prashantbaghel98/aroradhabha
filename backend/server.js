@@ -11,6 +11,9 @@ const orderRoute = require('./routes/orderRoute')
 const paymentRoute = require('./routes/paymentRoute')
 const reviewRoute = require('./routes/reviewRoute')
 const adminRoute = require('./routes/adminRoute')
+const path = require('path');
+
+
 
 
 
@@ -25,7 +28,7 @@ connectDB()
 app.use(cookieParser())
 app.use(express.json())
 app.use(cors({
-    origin:"http://localhost:5173",
+    origin:["http://localhost:5173","https://gray-oryx-860646.hostingersite.com"],
     credentials:true
 }))
 
@@ -52,10 +55,33 @@ app.use("/api/food", foodRoute);
 
 
 
+// ================================
+// SERVE REACT FRONTEND
+// ================================
 
+const frontendPath = path.join(
+    __dirname,
+    "../frontend/dist"
+);
 
+app.use(express.static(frontendPath));
 
+// ================================
+// REACT ROUTER FALLBACK
+// ================================
 
+app.use((req, res, next) => {
+    if (req.path.startsWith("/api")) {
+        return next();
+    }
+
+    res.sendFile(
+        path.join(
+            frontendPath,
+            "index.html"
+        )
+    );
+});
 
 
 
