@@ -79,7 +79,7 @@ app.use((req, res, next) => {
 });
 
 
-API Test
+// API Test
 
 app.get("/api", (req, res) => {
     res.send("API Working");
