@@ -37,9 +37,9 @@ app.use(cors({
 
 
 //Checking Routes
-app.get('/',(req,res)=>{
-    res.send("API Working")
-})
+// app.get('/',(req,res)=>{
+//     res.send("API Working")
+// })
 
 
 // All Routes 
