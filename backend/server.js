@@ -36,11 +36,6 @@ app.use(cors({
 
 
 
-//Checking Routes
-// app.get('/',(req,res)=>{
-//     res.send("API Working")
-// })
-
 
 // All Routes 
 app.use('/api/user',userRoute)
@@ -84,6 +79,11 @@ app.use((req, res, next) => {
 });
 
 
+API Test
+
+app.get("/api", (req, res) => {
+    res.send("API Working");
+});
 
 
 //Server
