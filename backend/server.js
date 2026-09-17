@@ -28,7 +28,7 @@ connectDB()
 app.use(cookieParser())
 app.use(express.json())
 app.use(cors({
-    origin:["http://localhost:5173","https://gray-oryx-860646.hostingersite.com"],
+    origin:["http://localhost:5173","https://arora-frontend.vercel.app/"],
     credentials:true
 }))
 
