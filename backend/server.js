@@ -11,7 +11,7 @@ const orderRoute = require('./routes/orderRoute')
 const paymentRoute = require('./routes/paymentRoute')
 const reviewRoute = require('./routes/reviewRoute')
 const adminRoute = require('./routes/adminRoute')
-const path = require('path');
+
 
 
 
@@ -60,12 +60,15 @@ app.get("/", (req, res) => {
 
 
 
-// Local development server
-
+// Local development
 if (process.env.NODE_ENV !== "production") {
-    app.listen(process.env.PORT, () => {
-        console.log(
-            `Server is running on port ${process.env.PORT}`
-        );
+    const PORT = process.env.PORT || 8080;
+
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
     });
 }
+
+
+// IMPORTANT FOR VERCEL
+module.exports = app;
