@@ -1,5 +1,5 @@
 const express = require('express')
-const env = require('dotenv/config')
+require("dotenv/config");
 const cookieParser = require('cookie-parser')
 const connectDB = require('./config/db')
 const cors = require('cors')
@@ -54,9 +54,9 @@ app.use("/api/food", foodRoute);
 
 // API Test
 
-// app.get("/", (req, res) => {
-//     res.send("API Working");
-// });
+app.get("/", (req, res) => {
+    res.send("API Working");
+});
 
 
 
