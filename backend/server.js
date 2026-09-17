@@ -21,7 +21,7 @@ const adminRoute = require('./routes/adminRoute')
 
 
 
-
+connectDB(); 
 const app = express();
 
 
@@ -58,6 +58,8 @@ app.use("/api/food", foodRoute);
 app.get("/", (req, res) => {
     res.send("API Working");
 });
+
+
 
 
 
