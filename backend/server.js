@@ -54,9 +54,9 @@ app.use("/api/food", foodRoute);
 
 // API Test
 
-app.get("/", (req, res) => {
-    res.send("API Working");
-});
+// app.get("/", (req, res) => {
+//     res.send("API Working");
+// });
 
 
 
