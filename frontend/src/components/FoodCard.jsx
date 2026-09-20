@@ -10,6 +10,8 @@ import {
     useNavigate
 } from "react-router-dom";
 
+import { useState } from "react";
+
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 
@@ -17,6 +19,13 @@ import { useCart } from "../context/CartContext";
 function FoodCard({ food }) {
 
     const navigate = useNavigate();
+
+
+    // ==========================================
+    // LOCAL LOADING STATE
+    // ==========================================
+
+    const [isAdding, setIsAdding] = useState(false);
 
 
     // ==========================================
@@ -35,9 +44,17 @@ function FoodCard({ food }) {
     const {
         addToCart,
         isInCart,
-        getCartItem,
-        loading
+        getCartItem
     } = useCart();
+
+
+    // ==========================================
+    // SAFETY
+    // ==========================================
+
+    if (!food) {
+        return null;
+    }
 
 
     // ==========================================
@@ -73,8 +90,7 @@ function FoodCard({ food }) {
 
     const price =
         food?.discountPrice != null &&
-        Number(food.discountPrice) <
-            Number(food.price)
+        Number(food.discountPrice) < Number(food.price)
             ? food.discountPrice
             : food?.price || 0;
 
@@ -85,56 +101,75 @@ function FoodCard({ food }) {
 
     const hasDiscount =
         food?.discountPrice != null &&
-        Number(food.discountPrice) <
-            Number(food.price);
+        Number(food.discountPrice) < Number(food.price);
 
 
     // ==========================================
     // ADD TO CART
     // ==========================================
 
-  const handleAddToCart = async () => {
-    if (!foodId) {
-        console.error("Food ID is missing");
-        return;
-    }
+    const handleAddToCart = async () => {
 
-    if (!isAuthenticated) {
-        navigate("/login", {
-            state: {
-                from: window.location.pathname
-            }
-        });
-        return;
-    }
+        if (!foodId) {
+            console.error("Food ID is missing");
+            return;
+        }
 
-    try {
-        // console.log("Adding food:", {
-        //     foodId,
-        //     quantity: 1
-        // });
 
-        const result = await addToCart(foodId, 1);
+        // ======================================
+        // LOGIN CHECK
+        // ======================================
 
-        // console.log("Food added successfully:", result);
+        if (!isAuthenticated) {
 
-    } catch (error) {
-        console.error(
-            "ADD TO CART ERROR:",
-            error.response?.data || error.message
-        );
-    }
-};
+            navigate("/login", {
+                state: {
+                    from: window.location.pathname
+                }
+            });
+
+            return;
+        }
+
+
+        // ======================================
+        // PREVENT DOUBLE CLICK
+        // ======================================
+
+        if (isAdding) {
+            return;
+        }
+
+
+        try {
+
+            // Only THIS card will show loading
+            setIsAdding(true);
+
+
+            await addToCart(foodId, 1);
+
+
+        } catch (error) {
+
+            console.error(
+                "ADD TO CART ERROR:",
+                error?.response?.data || error?.message
+            );
+
+
+        } finally {
+
+            // Only THIS card stops loading
+            setIsAdding(false);
+
+        }
+    };
 
 
     // ==========================================
-    // SAFETY
+    // RENDER
     // ==========================================
-
-    if (!food) {
-        return null;
-    }
-
 
     return (
 
@@ -409,7 +444,7 @@ function FoodCard({ food }) {
 
                 {/* =================================
                     PRICE + ADD BUTTON
-                ================================= */}
+                ================================== */}
 
                 <div
                     className="
@@ -468,11 +503,9 @@ function FoodCard({ food }) {
                         type="button"
                         disabled={
                             !food.isAvailable ||
-                            loading
+                            isAdding
                         }
-                        onClick={
-                            handleAddToCart
-                        }
+                        onClick={handleAddToCart}
                         className={`
                             flex
                             items-center
@@ -487,18 +520,26 @@ function FoodCard({ food }) {
                             ${
                                 !food.isAvailable
                                     ? "cursor-not-allowed bg-stone-200 text-stone-400"
-                                    : loading
+
+                                    : isAdding
                                     ? "cursor-not-allowed bg-stone-300 text-stone-500"
+
                                     : inCart
                                     ? "bg-green-100 text-green-700"
+
                                     : "bg-red-600 text-white hover:bg-red-700"
                             }
                         `}
                     >
 
-                        {loading ? (
+                        {/* =================================
+                            ONLY THIS CARD LOADING
+                        ================================= */}
+
+                        {isAdding ? (
 
                             <>
+
                                 <span
                                     className="
                                         h-4
@@ -551,9 +592,7 @@ function FoodCard({ food }) {
             </div>
 
         </div>
-
     );
-
 }
 
 
